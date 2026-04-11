@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statement Parser</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <h1 class="logo">📄 Statement Parser</h1>
+    <p class="tagline">Upload a bank statement PDF. Get structured spending data.</p>
+  </div>
+</header>
+
+<main class="container">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="alert alert--{{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- Upload card -->
+  <div class="card upload-card">
+    <h2>Upload your bank statement</h2>
+    <p class="muted">PDF only. Parsed locally — nothing leaves your machine.</p>
+
+    <form action="/upload" method="POST" enctype="multipart/form-data" id="uploadForm">
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-zone__icon">📂</div>
+        <p class="drop-zone__label">Drag &amp; drop a PDF here</p>
+        <p class="drop-zone__sub">or click to browse files</p>
+        <input type="file" name="file" id="fileInput" accept=".pdf" required>
+        <p class="drop-zone__chosen" id="chosenFile"></p>
+      </div>
+
+      <button type="submit" class="btn btn--primary" id="submitBtn" disabled>
+        Parse statement →
+      </button>
+    </form>
+
+    <div class="spinner hidden" id="spinner">
+      <div class="spinner__ring"></div>
+      <span>Parsing… this usually takes a few seconds.</span>
+    </div>
+  </div>
+
+  <!-- What it extracts -->
+  <div class="feature-grid">
+    <div class="feature-item">
+      <span class="feature-icon">🏦</span>
+      <strong>Account metrics</strong>
+      <small>Balance, credit limit, APR, due date</small>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">📊</span>
+      <strong>Summary totals</strong>
+      <small>Purchases, payments, fees, interest</small>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">🧾</span>
+      <strong>Every transaction</strong>
+      <small>Date, merchant, amount, category</small>
+    </div>
+    <div class="feature-item">
+      <span class="feature-icon">💡</span>
+      <strong>Derived insights</strong>
+      <small>Category totals, top merchants, averages</small>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>Runs entirely on your machine — Flask + pdfplumber, no cloud.</p>
+</footer>
+
+<script>
+  const dropZone  = document.getElementById("dropZone");
+  const fileInput = document.getElementById("fileInput");
+  const chosenFile = document.getElementById("chosenFile");
+  const submitBtn = document.getElementById("submitBtn");
+  const spinner   = document.getElementById("spinner");
+  const form      = document.getElementById("uploadForm");
+
+  // Click on drop zone opens file picker
+  dropZone.addEventListener("click", () => fileInput.click());
+
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (file) {
+      chosenFile.textContent = "✓ " + file.name;
+      submitBtn.disabled = false;
+    }
+  });
+
+  // Drag-and-drop
+  dropZone.addEventListener("dragover", e => {
+    e.preventDefault();
+    dropZone.classList.add("drop-zone--hover");
+  });
+  dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drop-zone--hover"));
+  dropZone.addEventListener("drop", e => {
+    e.preventDefault();
+    dropZone.classList.remove("drop-zone--hover");
+    const file = e.dataTransfer.files[0];
+    if (file && file.name.toLowerCase().endsWith(".pdf")) {
+      // Assign to input via DataTransfer
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fileInput.files = dt.files;
+      chosenFile.textContent = "✓ " + file.name;
+      submitBtn.disabled = false;
+    } else {
+      chosenFile.textContent = "⚠ Only PDF files are accepted.";
+    }
+  });
+
+  // Show spinner on submit
+  form.addEventListener("submit", () => {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Parsing…";
+    spinner.classList.remove("hidden");
+  });
+</script>
+</body>
+</html>

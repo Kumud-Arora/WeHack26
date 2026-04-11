@@ -1,0 +1,10 @@
+flask>=3.0.0
+pdfplumber>=0.11.0
+PyMuPDF>=1.24.0
+werkzeug>=3.0.0
+
+# Optional: OCR support for scanned/image-based PDFs
+# Requires Tesseract to be installed on the OS separately.
+# Install: pip install pdf2image pytesseract
+# pdf2image>=1.16.0
+# pytesseract>=0.3.10
