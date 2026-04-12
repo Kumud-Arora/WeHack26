@@ -1,0 +1,187 @@
+{
+  "+19725767779": {
+    "user_id": "+19725767779",
+    "display_name": "+19725767779",
+    "registered_at": "2026-04-12T08:03:32.726651+00:00",
+    "latest_statement_id": "Bank_Statement_march_26_20260412_031954",
+    "budget_preferences": {},
+    "behavioral_history": []
+  },
+  "+12149316797": {
+    "user_id": "+12149316797",
+    "display_name": "+12149316797",
+    "registered_at": "2026-04-12T08:17:02.679647+00:00",
+    "latest_statement_id": "Bank_Statement_march_26_20260412_035838",
+    "budget_preferences": {},
+    "behavioral_history": [
+      {
+        "call_sid": "CA4db44bff9102b83d61ec828d596e799d",
+        "call_date": "2026-04-12T08:17:02.679660+00:00",
+        "conversation_id": "CA4db44bff9102b83d61ec828d596e799d",
+        "raw_features": {
+          "compliance_score": 0.0,
+          "pushback_count": 0,
+          "hesitation_count": 0,
+          "impulse_count": 0,
+          "decision_turn": -1,
+          "spending_type": "unclear",
+          "purchase_category": "unknown",
+          "total_turns": 6,
+          "persona_used": "friendly"
+        },
+        "metrics": {
+          "compliance_level": "low",
+          "pushback_level": "low",
+          "spending_intent": "unclear",
+          "purchase_category": "unknown",
+          "confidence_score": 0.24,
+          "persuadability_score": 0.0,
+          "persona_effectiveness": {
+            "persona": "friendly",
+            "pushback_rate": 0.0,
+            "persuadability": 0.0
+          },
+          "decision_speed": "undecided",
+          "impulse_flag": false
+        },
+        "summary": "User showed little compliance during this call. Spending intent was unclear. No clear decision was made by the end of the call. User was difficult to persuade even with the 'friendly' persona."
+      },
+      {
+        "call_sid": "CA1b3156aca5e0e92587e7db0cf05b8a88",
+        "call_date": "2026-04-12T08:25:56.666067+00:00",
+        "conversation_id": "CA1b3156aca5e0e92587e7db0cf05b8a88",
+        "raw_features": {
+          "compliance_score": 0.0,
+          "pushback_count": 0,
+          "hesitation_count": 0,
+          "impulse_count": 0,
+          "decision_turn": -1,
+          "spending_type": "unclear",
+          "purchase_category": "unknown",
+          "total_turns": 12,
+          "persona_used": "friendly"
+        },
+        "metrics": {
+          "compliance_level": "low",
+          "pushback_level": "low",
+          "spending_intent": "unclear",
+          "purchase_category": "unknown",
+          "confidence_score": 0.4,
+          "persuadability_score": 0.0,
+          "persona_effectiveness": {
+            "persona": "friendly",
+            "pushback_rate": 0.0,
+            "persuadability": 0.0
+          },
+          "decision_speed": "undecided",
+          "impulse_flag": false
+        },
+        "summary": "User showed little compliance during this call. Spending intent was unclear. No clear decision was made by the end of the call. User was difficult to persuade even with the 'friendly' persona."
+      },
+      {
+        "call_sid": "CAc37586280f1c773a2109ec1e50feccd4",
+        "call_date": "2026-04-12T08:37:27.989253+00:00",
+        "conversation_id": "CAc37586280f1c773a2109ec1e50feccd4",
+        "raw_features": {
+          "compliance_score": 0.0,
+          "pushback_count": 0,
+          "hesitation_count": 0,
+          "impulse_count": 0,
+          "decision_turn": -1,
+          "spending_type": "unclear",
+          "purchase_category": "shopping",
+          "total_turns": 12,
+          "persona_used": "friendly"
+        },
+        "metrics": {
+          "compliance_level": "low",
+          "pushback_level": "low",
+          "spending_intent": "unclear",
+          "purchase_category": "shopping",
+          "confidence_score": 0.4,
+          "persuadability_score": 0.0,
+          "persona_effectiveness": {
+            "persona": "friendly",
+            "pushback_rate": 0.0,
+            "persuadability": 0.0
+          },
+          "decision_speed": "undecided",
+          "impulse_flag": false
+        },
+        "summary": "User showed little compliance during this call. Spending intent was unclear. No clear decision was made by the end of the call. User was difficult to persuade even with the 'friendly' persona."
+      },
+      {
+        "call_sid": "CAb6e62ed473827698dae6972f4ffcca4a",
+        "call_date": "2026-04-12T08:40:25.264959+00:00",
+        "conversation_id": "CAb6e62ed473827698dae6972f4ffcca4a",
+        "raw_features": {
+          "compliance_score": 0.0,
+          "pushback_count": 0,
+          "hesitation_count": 1,
+          "impulse_count": 0,
+          "decision_turn": -1,
+          "spending_type": "unclear",
+          "purchase_category": "unknown",
+          "total_turns": 10,
+          "persona_used": "friendly"
+        },
+        "metrics": {
+          "compliance_level": "low",
+          "pushback_level": "low",
+          "spending_intent": "unclear",
+          "purchase_category": "unknown",
+          "confidence_score": 0.35,
+          "persuadability_score": 0.03,
+          "persona_effectiveness": {
+            "persona": "friendly",
+            "pushback_rate": 0.0,
+            "persuadability": 0.03
+          },
+          "decision_speed": "undecided",
+          "impulse_flag": false
+        },
+        "summary": "User showed little compliance during this call. Spending intent was unclear. No clear decision was made by the end of the call. User was difficult to persuade even with the 'friendly' persona."
+      },
+      {
+        "call_sid": "CAa589ba609ea9eb13346426801a391b13",
+        "call_date": "2026-04-12T08:48:28.694447+00:00",
+        "conversation_id": "CAa589ba609ea9eb13346426801a391b13",
+        "raw_features": {
+          "compliance_score": 0.0,
+          "pushback_count": 0,
+          "hesitation_count": 1,
+          "impulse_count": 0,
+          "decision_turn": -1,
+          "spending_type": "unclear",
+          "purchase_category": "unknown",
+          "total_turns": 6,
+          "persona_used": "friendly"
+        },
+        "metrics": {
+          "compliance_level": "low",
+          "pushback_level": "low",
+          "spending_intent": "unclear",
+          "purchase_category": "unknown",
+          "confidence_score": 0.19,
+          "persuadability_score": 0.03,
+          "persona_effectiveness": {
+            "persona": "friendly",
+            "pushback_rate": 0.0,
+            "persuadability": 0.03
+          },
+          "decision_speed": "undecided",
+          "impulse_flag": false
+        },
+        "summary": "User showed little compliance during this call. Spending intent was unclear. No clear decision was made by the end of the call. User was difficult to persuade even with the 'friendly' persona."
+      }
+    ]
+  },
+  "+2149316797": {
+    "user_id": "+2149316797",
+    "display_name": "+2149316797",
+    "registered_at": "2026-04-12T08:22:45.646729+00:00",
+    "latest_statement_id": "Bank_Statement_march_26_20260412_031954",
+    "budget_preferences": {},
+    "behavioral_history": []
+  }
+}

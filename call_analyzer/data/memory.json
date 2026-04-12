@@ -206,5 +206,81 @@
         "impulse_flag": false
       }
     ]
+  },
+  "+12149316797": {
+    "user_id": "+12149316797",
+    "total_calls": 5,
+    "avg_compliance": 0.0,
+    "avg_pushback": 0.0,
+    "avg_hesitation": 0.4,
+    "avg_confidence": 0.316,
+    "avg_persuadability": 0.012,
+    "impulse_frequency": 0.0,
+    "most_common_purchase_category": "unknown",
+    "category_counts": {
+      "unknown": 4,
+      "shopping": 1
+    },
+    "risk_tendency": "high",
+    "preferred_persona": "friendly",
+    "persona_stats": {
+      "friendly": {
+        "calls": 5,
+        "avg_compliance": 0.0,
+        "avg_persuadability": 0.012
+      }
+    },
+    "history": [
+      {
+        "call_index": 1,
+        "compliance": 0.0,
+        "pushback": 0,
+        "spending_type": "unclear",
+        "purchase_category": "unknown",
+        "confidence": 0.24,
+        "persuadability": 0.0,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 2,
+        "compliance": 0.0,
+        "pushback": 0,
+        "spending_type": "unclear",
+        "purchase_category": "unknown",
+        "confidence": 0.4,
+        "persuadability": 0.0,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 3,
+        "compliance": 0.0,
+        "pushback": 0,
+        "spending_type": "unclear",
+        "purchase_category": "shopping",
+        "confidence": 0.4,
+        "persuadability": 0.0,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 4,
+        "compliance": 0.0,
+        "pushback": 0,
+        "spending_type": "unclear",
+        "purchase_category": "unknown",
+        "confidence": 0.35,
+        "persuadability": 0.03,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 5,
+        "compliance": 0.0,
+        "pushback": 0,
+        "spending_type": "unclear",
+        "purchase_category": "unknown",
+        "confidence": 0.19,
+        "persuadability": 0.03,
+        "impulse_flag": false
+      }
+    ]
   }
 }

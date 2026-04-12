@@ -1,10 +1,22 @@
+# ── Core web app ─────────────────────────────────────────────────────────────
 flask>=3.0.0
-pdfplumber>=0.11.0
-PyMuPDF>=1.24.0
 werkzeug>=3.0.0
 
-# Optional: OCR support for scanned/image-based PDFs
+# ── PDF parsing ───────────────────────────────────────────────────────────────
+pdfplumber>=0.11.0
+PyMuPDF>=1.24.0
+
+# ── Voice call integration ────────────────────────────────────────────────────
+twilio>=8.0.0
+
+# ── AI / Gemini ───────────────────────────────────────────────────────────────
+google-generativeai>=0.7.0
+
+# ── Environment variables ─────────────────────────────────────────────────────
+python-dotenv>=1.0.0
+
+# ── Optional: OCR support for scanned/image-based PDFs ───────────────────────
 # Requires Tesseract to be installed on the OS separately.
-# Install: pip install pdf2image pytesseract
+# pip install pdf2image pytesseract
 # pdf2image>=1.16.0
 # pytesseract>=0.3.10

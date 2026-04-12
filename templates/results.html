@@ -239,6 +239,52 @@
     {% endif %}
   </div>
 
+  {# ── Link phone number for voice coaching calls ──────────────────────────── #}
+  <div class="card" style="margin-top:1.5rem;">
+    <h2 class="card__title">Enable Voice Coaching Calls</h2>
+    <p class="muted" style="margin-bottom:.75rem;">
+      Link your phone number so you can call your Twilio number and ask questions
+      about this statement using AI voice coaching.
+    </p>
+    <form action="/link-phone" method="POST"
+          style="display:flex;flex-wrap:wrap;gap:.5rem;align-items:flex-end;">
+      <input type="hidden" name="result_id" value="{{ result_id }}">
+
+      <div style="display:flex;flex-direction:column;gap:.25rem;">
+        <label for="phone_number"
+               style="font-size:.8rem;color:var(--muted);font-weight:600;">
+          Phone number (with country code)
+        </label>
+        <input type="tel" id="phone_number" name="phone_number"
+               placeholder="+15551234567"
+               class="search-input" style="width:200px;" required>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:.25rem;">
+        <label for="display_name"
+               style="font-size:.8rem;color:var(--muted);font-weight:600;">
+          Your name (optional)
+        </label>
+        <input type="text" id="display_name" name="display_name"
+               placeholder="e.g. Manthra"
+               class="search-input" style="width:150px;">
+      </div>
+
+      <button type="submit" class="btn btn--outline" style="height:2.2rem;">
+        Link Phone
+      </button>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <p style="margin-top:.5rem;font-size:.85rem;
+                  color:{% if category == 'success' %}#2da44e{% else %}#cf222e{% endif %};">
+          {{ message }}
+        </p>
+      {% endfor %}
+    {% endwith %}
+  </div>
+
 </main>
 
 <footer class="site-footer">
