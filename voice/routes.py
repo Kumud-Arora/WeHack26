@@ -27,6 +27,7 @@ from typing import Any
 from flask import Blueprint, Response, request
 
 from voice.session import session_store
+from voice import inworld_client
 
 logger = logging.getLogger(__name__)
 
@@ -79,8 +80,10 @@ def _xml(text: str) -> str:
 
 
 def _twiml(body: str) -> Response:
+    xml_content = f'<?xml version="1.0" encoding="UTF-8"?>\n<Response>\n{body}\n</Response>'
+    logger.debug("TwiML XML:\n%s", xml_content)
     return Response(
-        f'<?xml version="1.0" encoding="UTF-8"?>\n<Response>\n{body}\n</Response>',
+        xml_content,
         status=200,
         mimetype="text/xml",
     )
@@ -89,12 +92,12 @@ def _twiml(body: str) -> Response:
 def _gather_block(say_text: str, timeout: int = 8) -> str:
     """
     TwiML <Gather input="speech"> block that POSTs to /voice/speech.
+    Uses simple Twilio Say for now (Inworld TTS will be added back after basic flow works).
     timeout=8  — seconds of initial silence before giving up
     speechTimeout=2 — seconds of end-of-speech silence before submitting
-                      (avoids cutting off the user mid-sentence)
-    If the user is silent past timeout seconds, falls through to <Redirect>.
     """
     action_url = f"{_base_url()}/voice/speech"
+    
     return (
         f'  <Gather input="speech" action="{action_url}" method="POST"\n'
         f'          timeout="{timeout}" speechTimeout="2" language="en-US">\n'
@@ -161,27 +164,35 @@ def incoming_call() -> Response:
     Twilio hits this URL when a call arrives at the configured phone number.
     We greet the user and immediately open a speech <Gather>.
     """
-    call_sid = request.form.get("CallSid", "unknown")
-    caller   = request.form.get("From",    "unknown")
+    try:
+        call_sid = request.form.get("CallSid", "unknown")
+        caller   = request.form.get("From",    "unknown")
 
-    # For MVP, user_id = the caller's phone number (E.164)
-    user_id = caller
-    persona = _preferred_persona(user_id)
+        logger.info("=== INCOMING CALL START: %s from %s ===", call_sid, caller)
 
-    session_store.create(call_sid, caller, user_id, persona)
-    logger.info("Incoming call %s from %s (persona=%s)", call_sid, caller, persona)
+        # For MVP, user_id = the caller's phone number (E.164)
+        user_id = caller
+        persona = _preferred_persona(user_id)
 
-    greeting = (
-        "Hi! I'm your AI financial assistant. "
-        "I can answer questions about your bank statement, spending, or budget. "
-        "What would you like to know?"
-    )
+        session_store.create(call_sid, caller, user_id, persona)
+        logger.info("Session created: %s (persona=%s)", call_sid, persona)
 
-    body = (
-        f'  <Say voice="alice">{_xml(greeting)}</Say>\n'
-        + _gather_block("Go ahead, I'm listening.")
-    )
-    return _twiml(body)
+        # Simplest possible greeting
+        greeting_text = "Hi there. What is your question?"
+        
+        # Build minimal TwiML - standard Twilio format
+        body = (
+            f'<Say>{_xml(greeting_text)}</Say>\n'
+            f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="5" speechTimeout="2"/>\n'
+        )
+        
+        twiml_response = _twiml(body)
+        logger.info("=== RETURNING TwiML for %s ===", call_sid)
+        return twiml_response
+    
+    except Exception as exc:
+        logger.error("=== EXCEPTION IN INCOMING: %s ===", exc, exc_info=True)
+        return _twiml(f'<Say>Error occurred</Say>\n<Hangup/>\n')
 
 
 @voice_bp.route("/speech", methods=["POST"])
@@ -190,65 +201,83 @@ def handle_speech() -> Response:
     Called by Twilio after <Gather> captures speech.
     Detects exit intent, then builds Gemini context and speaks a reply.
     """
-    call_sid    = request.form.get("CallSid",      "unknown")
-    speech_text = request.form.get("SpeechResult", "").strip()
-    confidence  = float(request.form.get("Confidence", 0))
-
-    logger.info("Speech [%s] conf=%.2f: %s", call_sid, confidence, speech_text[:120])
-
-    session = session_store.get(call_sid)
-    if not session:
-        # Lost session (e.g. server restart mid-call)
-        logger.warning("No session for %s — recovering", call_sid)
-        body = _gather_block("I'm sorry, I lost our connection. What did you want to know?")
-        return _twiml(body)
-
-    # ── Nothing heard ─────────────────────────────────────────────────────
-    if not speech_text:
-        body = _gather_block("I didn't quite catch that. Could you say that again?")
-        return _twiml(body)
-
-    # ── Exit intent ───────────────────────────────────────────────────────
-    if _is_exit(speech_text):
-        session.add_turn("user", speech_text)
-        farewell = (
-            "Great talking with you! Stay on top of your budget. "
-            "Have a wonderful day. Goodbye!"
-        )
-        session.add_turn("assistant", farewell)
-        _run_postprocess(call_sid, session.user_id, session.to_conversation())
-        session_store.remove(call_sid)
-        return _twiml(
-            f'  <Say voice="alice">{_xml(farewell)}</Say>\n'
-            f'  <Hangup/>'
-        )
-
-    # ── Generate Gemini response ──────────────────────────────────────────
     try:
-        from voice.context_builder import build_context, build_system_prompt
-        from voice import gemini_client
+        call_sid    = request.form.get("CallSid",      "unknown")
+        speech_text = request.form.get("SpeechResult", "").strip()
+        confidence  = float(request.form.get("Confidence", 0) or 0)
 
-        context       = build_context(session.user_id)
-        system_prompt = build_system_prompt(context)
-        ai_reply      = gemini_client.ask(system_prompt, speech_text)
+        logger.info("=== SPEECH START: %s, text='%s', conf=%.2f ===", call_sid, speech_text[:50], confidence)
 
+        session = session_store.get(call_sid)
+        if not session:
+            logger.warning("No session found for %s", call_sid)
+            body = '<Say>I lost our connection.</Say>\n<Hangup/>\n'
+            return _twiml(body)
+
+        if not speech_text:
+            logger.info("No speech detected")
+            body = (
+                f'<Say>I did not hear anything.</Say>\n'
+                f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="5" speechTimeout="2"/>\n'
+            )
+            return _twiml(body)
+
+        # Check for exit
+        if _is_exit(speech_text):
+            logger.info("Exit detected")
+            session.add_turn("user", speech_text)
+            _run_postprocess(call_sid, session.user_id, session.to_conversation())
+            session_store.remove(call_sid)
+            body = '<Say>Goodbye.</Say>\n<Hangup/>\n'
+            return _twiml(body)
+
+        # Generate Gemini response
+        logger.info("Getting Gemini response for: %s", speech_text[:100])
+        try:
+            from voice.context_builder import build_context, build_system_prompt
+            from voice import gemini_client
+
+            context       = build_context(session.user_id)
+            system_prompt = build_system_prompt(context)
+            ai_reply      = gemini_client.ask(system_prompt, speech_text)
+            logger.info("Gemini replied: %s", ai_reply[:100])
+
+        except Exception as exc:
+            logger.error("Gemini error: %s", exc, exc_info=True)
+            ai_reply = "I'm having trouble right now. Please try again."
+
+        session.add_turn("user", speech_text)
+        session.add_turn("assistant", ai_reply)
+
+        # Try Inworld TTS for the response (Gemini now adds emotion tags directly)
+        logger.info("Attempting Inworld TTS for response")
+        try:
+            audio_url, error = inworld_client.synthesize(ai_reply)
+            if audio_url:
+                logger.info("Inworld TTS succeeded: %s", audio_url)
+                body = (
+                    f'<Play>{_xml(audio_url)}</Play>\n'
+                    f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="5" speechTimeout="2"/>\n'
+                )
+            else:
+                logger.warning("Inworld TTS failed, using Twilio Say: %s", error)
+                body = (
+                    f'<Say>{_xml(ai_reply)}</Say>\n'
+                    f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="5" speechTimeout="2"/>\n'
+                )
+        except Exception as exc:
+            logger.error("TTS exception: %s", exc, exc_info=True)
+            body = (
+                f'<Say>{_xml(ai_reply)}</Say>\n'
+                f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="5" speechTimeout="2"/>\n'
+            )
+        
+        logger.info("=== RETURNING SPEECH RESPONSE ===")
+        return _twiml(body)
+    
     except Exception as exc:
-        logger.error("Context/Gemini error for %s: %s", call_sid, exc, exc_info=True)
-        ai_reply = (
-            "I'm having trouble accessing your data right now. "
-            "Please try again in a moment."
-        )
-
-    # Store both sides of this exchange
-    session.add_turn("user",      speech_text)
-    session.add_turn("assistant", ai_reply)
-
-    # ── Speak reply + ask if there's more ────────────────────────────────
-    body = (
-        f'  <Say voice="alice">{_xml(ai_reply)}</Say>\n'
-        + _gather_block("Is there anything else I can help you with?")
-    )
-    return _twiml(body)
+        logger.error("=== EXCEPTION IN SPEECH: %s ===", exc, exc_info=True)
+        return _twiml('<Say>An error occurred.</Say>\n<Hangup/>\n')
 
 
 @voice_bp.route("/status", methods=["POST"])

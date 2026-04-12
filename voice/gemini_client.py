@@ -71,7 +71,7 @@ def _get_model():
 def ask(
     system_prompt: str,
     user_message: str,
-    max_tokens: int = 500,
+    max_tokens: int = 1024,
 ) -> str:
     """
     Send a single-turn question to Gemini with the given system context.
@@ -83,7 +83,7 @@ def ask(
     user_message : str
         The user's question / speech transcript from Twilio.
     max_tokens : int
-        Soft limit on response length (150 ≈ 1-2 spoken sentences).
+        Soft limit on response length (1024 ≈ 10-12 spoken sentences).
 
     Returns
     -------
@@ -101,16 +101,30 @@ def ask(
         full_prompt = (
             f"{system_prompt}\n\n"
             f"User says: {user_message}\n\n"
-            f"Reply in natural spoken sentences. Simple questions: 1-2 sentences. "
-            f"Complex financial questions: up to 5-6 sentences, but always finish your thought. "
-            f"No lists, no markdown, no headers, no bullet points."
+            f"Reply like you're a confident, sassy friend giving financial advice on the phone. "
+            f"Be witty, fun, and a little cheeky - but still helpful. "
+            f"Use contractions (I'm, you're, it's, don't, can't, etc). "
+            f"Drop some attitude and personality - think sarcasm, eye-roll energy, playful confidence. "
+            f"Keep replies to 1-3 sentences max - punchy and quick like real banter. "
+            f"\n"
+            f"IMPORTANT: ADD EMOTION TAGS TO YOUR RESPONSE FOR NATURAL, EXPRESSIVE SPEECH:\n"
+            f"- Use [pause_500ms] after thinking words like 'Hmm,', 'Well,', 'Actually,' to add natural pauses\n"
+            f"- Wrap [emphasis]important words[/emphasis] to stress them (e.g., 'That's [emphasis]literally[/emphasis] a waste')\n"
+            f"- For questions, wrap the whole thing: [pitch_high][rate_slow]Is that even a question?[/rate_slow][/pitch_high]\n"
+            f"- Use [pause_200ms] between sentences for natural timing\n"
+            f"Example responses:\n"
+            f"'Well[pause_500ms], that's [emphasis]literally[/emphasis] what got you into this mess.'\n"
+            f"'[pitch_high][rate_slow]Do you even look at your bank statement?[/rate_slow][/pitch_high]'\n"
+            f"\n"
+            f"Use simple, modern words. Sound like you actually care but aren't taking it too seriously. "
+            f"No lists, no markdown, no formal language. Just confident, sassy speech WITH emotion tags naturally woven in."
         )
 
         response = model.generate_content(
             full_prompt,
             generation_config=genai.GenerationConfig(
-                max_output_tokens=max_tokens,  # 500 allows ~5-6 spoken sentences
-                temperature=0.7,
+                max_output_tokens=max_tokens,
+                temperature=0.9,  # Higher for more personality and sass
             ),
         )
 

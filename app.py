@@ -17,6 +17,7 @@ POST /voice/incoming         Twilio: incoming call webhook
 POST /voice/speech           Twilio: gathered speech webhook
 POST /voice/status           Twilio: call-status change callback
 GET  /voice/health           voice-subsystem health
+GET  /api/audio/<filename>   serve Inworld TTS-generated audio files to Twilio
 """
 
 from __future__ import annotations
@@ -34,6 +35,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    Response,
     send_from_directory,
     url_for,
 )
@@ -50,7 +52,7 @@ from parser import OUTPUT_DIR, parse_statement, save_json
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s %(levelname)-8s %(name)s — %(message)s",
     datefmt="%H:%M:%S",
 )
@@ -185,6 +187,57 @@ def view_json(result_id: str):
         data = json.load(fp)
 
     return jsonify(data)
+
+
+# ── Audio serving for Inworld TTS ───────────────────────────────────────────
+
+@app.route("/api/audio/<filename>")
+def serve_audio(filename: str):
+    """
+    Serve Inworld TTS-generated audio files.
+    Files are stored in the system's temp directory under inworld_audio/.
+    """
+    import tempfile
+    
+    try:
+        # Validate filename to prevent directory traversal
+        if ".." in filename or filename.startswith("/"):
+            logger.error("Invalid filename attempt: %s", filename)
+            return Response("Invalid filename", status=400)
+        
+        audio_dir = Path(tempfile.gettempdir()) / "inworld_audio"
+        audio_path = audio_dir / filename
+        
+        # Resolve and validate path
+        audio_path = audio_path.resolve()
+        audio_dir_resolved = audio_dir.resolve()
+        
+        # Check if path is within the audio directory
+        audio_path_str = str(audio_path)
+        audio_dir_str = str(audio_dir_resolved)
+        
+        if not audio_path_str.startswith(audio_dir_str):
+            logger.error("Path traversal attempt: %s", audio_path)
+            return Response("Access denied", status=403)
+        
+        if not audio_path.exists():
+            logger.warning("Audio file not found: %s", audio_path)
+            return Response("Audio file not found", status=404)
+        
+        logger.info("Serving audio file: %s", filename)
+        
+        # Read and return audio file
+        with open(audio_path, "rb") as f:
+            audio_content = f.read()
+        
+        response = Response(audio_content, mimetype="audio/mpeg")
+        response.headers["Content-Type"] = "audio/mpeg"
+        response.headers["Content-Length"] = len(audio_content)
+        return response
+        
+    except Exception as exc:
+        logger.error("Error serving audio file %s: %s", filename, exc, exc_info=True)
+        return Response("Error serving audio", status=500)
 
 
 # ── Voice — phone / profile linking ──────────────────────────────────────────
