@@ -1,0 +1,349 @@
+{
+  "file_name": "Bank Statement march 26.pdf",
+  "upload_timestamp": "2026-04-12T07:12:14.072401",
+  "parsing_status": "success",
+  "parsing_notes": [
+    "Discover strategy: 13 transactions",
+    "Selected Discover strategy."
+  ],
+  "extraction_method": "pdfplumber_words",
+  "account_metrics": {
+    "new_balance": 129.42,
+    "previous_balance": 129.42,
+    "minimum_payment": 35.0,
+    "payment_due_date": "2026-04-15",
+    "credit_limit": 1300.0,
+    "available_credit": 1079.0,
+    "apr": null,
+    "statement_start_date": null,
+    "statement_end_date": null,
+    "fico_score": 776
+  },
+  "summary_metrics": {
+    "total_purchases": 220.11,
+    "payments_made": 129.42,
+    "fees_charged": 0.0,
+    "interest_charged": 0.0,
+    "credits": null,
+    "cash_advances": 28.49
+  },
+  "transactions": [
+    {
+      "transaction_date": "2026-03-13",
+      "posting_date": null,
+      "merchant_raw": "DIRECTPAY FULL BALANCE",
+      "merchant_normalized": "Directpay Full Balance",
+      "amount": 129.42,
+      "direction": "credit",
+      "raw_category": null,
+      "normalized_category": "miscellaneous",
+      "location_text": null
+    },
+    {
+      "transaction_date": "2026-02-18",
+      "posting_date": null,
+      "merchant_raw": "TACO BELL 37101 RICHARDSON TX",
+      "merchant_normalized": "Taco Bell 37101 Richardson",
+      "amount": 6.88,
+      "direction": "debit",
+      "raw_category": "Restaurants",
+      "normalized_category": "dining",
+      "location_text": "RICHARDSON, TX"
+    },
+    {
+      "transaction_date": "2026-02-19",
+      "posting_date": null,
+      "merchant_raw": "UTD KALACHANDJIS RICHARDSON TX",
+      "merchant_normalized": "Utd Kalachandjis Richardson",
+      "amount": 11.89,
+      "direction": "debit",
+      "raw_category": "Restaurants",
+      "normalized_category": "dining",
+      "location_text": "UTD KALACHANDJIS RICHARDSON, TX"
+    },
+    {
+      "transaction_date": "2026-02-20",
+      "posting_date": null,
+      "merchant_raw": "WALMART STORE 03482 PLANO TX",
+      "merchant_normalized": "Walmart Store 03482 Plano",
+      "amount": 32.5,
+      "direction": "debit",
+      "raw_category": "Merchandise",
+      "normalized_category": "shopping",
+      "location_text": "PLANO, TX"
+    },
+    {
+      "transaction_date": "2026-02-20",
+      "posting_date": null,
+      "merchant_raw": "WALMART STORE 03482 PLANO TX",
+      "merchant_normalized": "Walmart Store 03482 Plano",
+      "amount": 68.95,
+      "direction": "debit",
+      "raw_category": "Merchandise",
+      "normalized_category": "shopping",
+      "location_text": "PLANO, TX"
+    },
+    {
+      "transaction_date": "2026-02-20",
+      "posting_date": null,
+      "merchant_raw": "SAMS STORE 08299 PLANO TX",
+      "merchant_normalized": "Sams Store 08299 Plano",
+      "amount": 20.71,
+      "direction": "debit",
+      "raw_category": "Warehouse Clubs",
+      "normalized_category": "shopping",
+      "location_text": "PLANO, TX"
+    },
+    {
+      "transaction_date": "2026-02-20",
+      "posting_date": null,
+      "merchant_raw": "SAMS STORE 08299 PLANO TX",
+      "merchant_normalized": "Sams Store 08299 Plano",
+      "amount": 5.39,
+      "direction": "debit",
+      "raw_category": "Warehouse Clubs",
+      "normalized_category": "shopping",
+      "location_text": "PLANO, TX"
+    },
+    {
+      "transaction_date": "2026-02-20",
+      "posting_date": null,
+      "merchant_raw": "SAMS STORE 08299 PLANO TX",
+      "merchant_normalized": "Sams Store 08299 Plano",
+      "amount": 33.53,
+      "direction": "debit",
+      "raw_category": "Warehouse Clubs",
+      "normalized_category": "shopping",
+      "location_text": "PLANO, TX"
+    },
+    {
+      "transaction_date": "2026-02-26",
+      "posting_date": null,
+      "merchant_raw": "120 BRAUMS STORE RICHARDSON TX",
+      "merchant_normalized": "120 Braums Store Richardson",
+      "amount": 1.57,
+      "direction": "debit",
+      "raw_category": "Restaurants",
+      "normalized_category": "dining",
+      "location_text": "BRAUMS STORE RICHARDSON, TX"
+    },
+    {
+      "transaction_date": "2026-02-26",
+      "posting_date": null,
+      "merchant_raw": "120 BRAUMS STORE RICHARDSON TX",
+      "merchant_normalized": "120 Braums Store Richardson",
+      "amount": 2.99,
+      "direction": "debit",
+      "raw_category": "Restaurants",
+      "normalized_category": "dining",
+      "location_text": "BRAUMS STORE RICHARDSON, TX"
+    },
+    {
+      "transaction_date": "2026-03-06",
+      "posting_date": null,
+      "merchant_raw": "DOMINO'S 9423 DALLAS TX",
+      "merchant_normalized": "Domino'S 9423 Dallas",
+      "amount": 32.44,
+      "direction": "debit",
+      "raw_category": "Restaurants",
+      "normalized_category": "dining",
+      "location_text": "DALLAS, TX"
+    },
+    {
+      "transaction_date": "2026-03-12",
+      "posting_date": null,
+      "merchant_raw": "7-ELEVEN 38342 RICHARDSON TX",
+      "merchant_normalized": "7-Eleven 38342 Richardson",
+      "amount": 2.7,
+      "direction": "debit",
+      "raw_category": "Gasoline",
+      "normalized_category": "essentials",
+      "location_text": "RICHARDSON, TX"
+    },
+    {
+      "transaction_date": "2026-03-14",
+      "posting_date": null,
+      "merchant_raw": "STARBUCKS STORE 06422 ROUND ROCK TX",
+      "merchant_normalized": "Starbucks Store 06422 Round Rock",
+      "amount": 0.56,
+      "direction": "debit",
+      "raw_category": "Restaurants",
+      "normalized_category": "dining",
+      "location_text": "ROUND ROCK, TX"
+    }
+  ],
+  "derived_metrics": {
+    "total_transaction_count": 13,
+    "debit_transaction_count": 12,
+    "credit_transaction_count": 1,
+    "total_spend": 220.11,
+    "average_transaction_amount": 18.34,
+    "category_totals": {
+      "shopping": 161.08,
+      "dining": 56.33,
+      "essentials": 2.7
+    },
+    "spending_by_category": {
+      "shopping": 161.08,
+      "dining": 56.33,
+      "essentials": 2.7
+    },
+    "top_merchants_by_spend": [
+      {
+        "merchant": "Walmart Store 03482 Plano",
+        "total": 101.45
+      },
+      {
+        "merchant": "Sams Store 08299 Plano",
+        "total": 59.63
+      },
+      {
+        "merchant": "Domino'S 9423 Dallas",
+        "total": 32.44
+      },
+      {
+        "merchant": "Utd Kalachandjis Richardson",
+        "total": 11.89
+      },
+      {
+        "merchant": "Taco Bell 37101 Richardson",
+        "total": 6.88
+      },
+      {
+        "merchant": "120 Braums Store Richardson",
+        "total": 4.56
+      },
+      {
+        "merchant": "7-Eleven 38342 Richardson",
+        "total": 2.7
+      },
+      {
+        "merchant": "Starbucks Store 06422 Round Rock",
+        "total": 0.56
+      }
+    ],
+    "top_merchants_by_frequency": [
+      {
+        "merchant": "Sams Store 08299 Plano",
+        "count": 3
+      },
+      {
+        "merchant": "Walmart Store 03482 Plano",
+        "count": 2
+      },
+      {
+        "merchant": "120 Braums Store Richardson",
+        "count": 2
+      },
+      {
+        "merchant": "Taco Bell 37101 Richardson",
+        "count": 1
+      },
+      {
+        "merchant": "Utd Kalachandjis Richardson",
+        "count": 1
+      },
+      {
+        "merchant": "Domino'S 9423 Dallas",
+        "count": 1
+      },
+      {
+        "merchant": "7-Eleven 38342 Richardson",
+        "count": 1
+      },
+      {
+        "merchant": "Starbucks Store 06422 Round Rock",
+        "count": 1
+      }
+    ]
+  },
+  "_debug": {
+    "extracted_sample": [
+      "DISCOVER IT\u00ae CARD ENDING IN 6461",
+      "CARDMEMBER SINCE2024",
+      "AccountSummary 02/19/2026 -03/18/2026 PaymentInformation",
+      "PreviousBalance $129.42 NewBalance MinimumPayment PaymentDueDate",
+      "PaymentsandCredits -$129.42",
+      "$220.11 $35.00 04/15/2026",
+      "Purchases +$220.11",
+      "BalanceTransfers +$0.00 Late Payment Warning:If we do not receive your minimum payment by the date",
+      "CashAdvances +$0.00 listed above, you may have to pay a late fee of up to$41.00.",
+      "FeesCharged +$0.00",
+      "InterestCharged +$0.00 YournextDirectPayautomaticpaymentof$220.11 willbeonApril13,2026. See",
+      "\"InformationForYou\"sectionforadditionaldetails.",
+      "NewBalance: $220.11",
+      "SeeInterestChargeCalculationsectionfollowingtheFeesand",
+      "InterestChargedsectionfordetailedAPRinformation",
+      "CreditLine $1,300",
+      "CreditLineAvailable $1,079",
+      "CashAdvanceCreditLine $780",
+      "CashAdvanceCreditLineAvailable $780",
+      "FICO\u00ae Score8basedonTransUnion\u00ae data:",
+      "776",
+      "AS OF 03/12/26",
+      "Very Good UpdatedMonthly",
+      "See KeyFactorsthathelpexplainyourscore",
+      "atDiscover.comorvisitourmobileapp",
+      "Getinstantaccesstothis",
+      "statement",
+      "Enrollinpaperlessstatementstodaytoeasily",
+      "accessyourstatementsonlineandreviewup",
+      "to7yearsofpaststatements.",
+      "JustscantheQRcode togetstartedand",
+      "gopaperlesstoday.",
+      "Notice:Seereversesideforimportantinformation",
+      "PaymentCoupon",
+      "ACCOUNT NUMBER ENDING IN6461",
+      "Detachatperforationaboveandreturnwithcheckpayableto NewBalance $220.11",
+      "Discover.Donotfold,clip,stapleorsendcash.",
+      "MinimumPaymentDue $35.00",
+      "PaymentDueDate 04/15/2026",
+      "AmountEnclosed $"
+    ],
+    "raw_lines_sample": [
+      "DISCOVER IT\u00ae CARD ENDING IN 6461",
+      "CARDMEMBER SINCE2024",
+      "AccountSummary  02/19/2026 -03/18/2026   PaymentInformation",
+      "PreviousBalance   $129.42  NewBalance  MinimumPayment PaymentDueDate",
+      "PaymentsandCredits   -$129.42",
+      "$220.11   $35.00   04/15/2026",
+      "Purchases   +$220.11",
+      "BalanceTransfers   +$0.00  Late Payment Warning:If we do not receive your minimum payment by the date",
+      "CashAdvances   +$0.00  listed above, you may have to pay a late fee of up to$41.00.",
+      "FeesCharged   +$0.00",
+      "InterestCharged   +$0.00  YournextDirectPayautomaticpaymentof$220.11 willbeonApril13,2026. See",
+      "\"InformationForYou\"sectionforadditionaldetails.",
+      "NewBalance:   $220.11",
+      "SeeInterestChargeCalculationsectionfollowingtheFeesand",
+      "InterestChargedsectionfordetailedAPRinformation",
+      "CreditLine   $1,300",
+      "CreditLineAvailable   $1,079",
+      "CashAdvanceCreditLine   $780",
+      "CashAdvanceCreditLineAvailable   $780",
+      "FICO\u00ae Score8basedonTransUnion\u00ae data:",
+      "776",
+      "AS OF 03/12/26",
+      "Very Good  UpdatedMonthly",
+      "See KeyFactorsthathelpexplainyourscore",
+      "atDiscover.comorvisitourmobileapp",
+      "Getinstantaccesstothis",
+      "statement",
+      "Enrollinpaperlessstatementstodaytoeasily",
+      "accessyourstatementsonlineandreviewup",
+      "to7yearsofpaststatements.",
+      "JustscantheQRcode togetstartedand",
+      "gopaperlesstoday.",
+      "Notice:Seereversesideforimportantinformation",
+      "PaymentCoupon",
+      "ACCOUNT NUMBER ENDING IN6461",
+      "Detachatperforationaboveandreturnwithcheckpayableto   NewBalance   $220.11",
+      "Discover.Donotfold,clip,stapleorsendcash.",
+      "MinimumPaymentDue   $35.00",
+      "PaymentDueDate   04/15/2026",
+      "AmountEnclosed   $"
+    ],
+    "total_text_lines": 241,
+    "tables_found": 11,
+    "is_discover": true
+  }
+}

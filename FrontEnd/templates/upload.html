@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MemoryBank</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    /* OpenDyslexic via CDN — only loads font, no overhead unless dyslexia mode is active */
+    @font-face {
+      font-family: 'OpenDyslexic';
+      src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/OpenDyslexic-Regular.otf') format('opentype');
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'OpenDyslexic';
+      src: url('https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/OpenDyslexic-Bold.otf') format('opentype');
+      font-weight: 700;
+      font-display: swap;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Animated background canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">📄</div>
+      <div>
+        <div class="logo-text">MemoryBank</div>
+        <div class="logo-sub">local · private · instant</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="theme-switcher">
+        <button class="theme-opt active" data-t="light" onclick="setTheme('light')">☀ Light</button>
+        <button class="theme-opt" data-t="dark" onclick="setTheme('dark')">🌙 Dark</button>
+        <button class="theme-opt" data-t="dyslexia" onclick="setTheme('dyslexia')">Dyslexia</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="alert alert--{{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="upload-wrapper">
+
+    <div class="upload-hero">
+      <h1>Turn your bank statement<br>into <em>clean data</em></h1>
+      <p>Drop a PDF. Get every transaction, category, and insight — processed entirely on your machine.</p>
+    </div>
+
+     
+
+    <div class="card upload-card">
+      <form action="/upload" method="POST" enctype="multipart/form-data" id="uploadForm">
+        <div class="drop-zone" id="dropZone">
+          <span class="drop-zone__icon">📂</span>
+          <p class="drop-zone__label">Drop your PDF here</p>
+          <p class="drop-zone__sub">or click to browse — PDF files only</p>
+          <input type="file" name="file" id="fileInput" accept=".pdf" required>
+          <p class="drop-zone__chosen" id="chosenFile"></p>
+        </div>
+
+        <button type="submit" class="btn--primary" id="submitBtn" disabled>
+          Parse statement →
+        </button>
+      </form>
+
+      <button class="sample-btn" onclick="window.location='/sample'">
+        🧾 Try with a sample statement
+      </button>
+
+      <div class="spinner hidden" id="spinner">
+        <div class="spinner__ring"></div>
+        <span>Parsing… usually takes a few seconds.</span>
+      </div>
+    </div>
+     <!-- Before / After hero -->
+    <div class="before-after">
+      <div class="ba-panel ba-panel--before">
+        <div class="ba-label">Before</div>
+        <div class="ba-lines">
+          <div class="ba-line" style="width:90%"></div>
+          <div class="ba-line" style="width:72%"></div>
+          <div class="ba-line" style="width:85%"></div>
+          <div class="ba-line" style="width:60%"></div>
+          <div class="ba-line" style="width:78%"></div>
+          <div class="ba-line" style="width:50%"></div>
+          <div class="ba-line" style="width:83%"></div>
+        </div>
+        <p style="font-size:.72rem; color:var(--muted); margin-top:.75rem; font-style:italic; line-height:1.4;">Nothing here — you hadn't discovered our tech yet.</p>
+      </div>
+      <div class="ba-arrow">→</div>
+      <div class="ba-panel ba-panel--after">
+        <div class="ba-label">After</div>
+        <table class="ba-table">
+          <thead><tr><th>Date</th><th>Merchant</th><th>Amount</th><th>Category</th></tr></thead>
+          <tbody>
+            <tr><td>03/14</td><td>Starbucks</td><td>$0.56</td><td><span class="ba-pill ba-pill--dining">dining</span></td></tr>
+            <tr><td>03/06</td><td>Domino's</td><td>$32.44</td><td><span class="ba-pill ba-pill--dining">dining</span></td></tr>
+            <tr><td>02/20</td><td>Walmart</td><td>$68.95</td><td><span class="ba-pill ba-pill--shopping">shopping</span></td></tr>
+            <tr><td>02/20</td><td>Sam's Club</td><td>$33.53</td><td><span class="ba-pill ba-pill--shopping">shopping</span></td></tr>
+            <tr><td>03/12</td><td>7-Eleven</td><td>$2.70</td><td><span class="ba-pill ba-pill--essentials">essentials</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Agent Memory Card -->
+    <div class="card memory-card" id="memoryCard" style="display:none; width:100%; max-width:560px; margin-top:1.5rem;">
+      <div class="memory-header">
+        <span class="memory-badge">🧠 Your Insights</span>
+        <span style="font-size:.8rem; color:var(--muted);">Based on your past conversations</span>
+      </div>
+      <div class="memory-insights" id="memoryInsights"></div>
+      <div style="font-size:.78rem; color:var(--muted); margin-bottom:.4rem; font-weight:600; text-transform:uppercase; letter-spacing:.07em;">Compliance per session</div>
+      <div class="memory-history" id="memoryHistory"></div>
+      <p class="memory-note" id="memoryNote"></p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <span class="feature-icon">🏦</span>
+        <strong>Account metrics</strong>
+        <small>Balance, credit limit, APR, due date</small>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">📊</span>
+        <strong>Summary totals</strong>
+        <small>Purchases, payments, fees, interest</small>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🧾</span>
+        <strong>Every transaction</strong>
+        <small>Date, merchant, amount, category</small>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">💡</span>
+        <strong>Derived insights</strong>
+        <small>Category totals, top merchants, averages</small>
+      </div>
+    </div>
+
+    
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>100% local — Flask + pdfplumber. Nothing sent to any server.</p>
+</footer>
+
+<script>
+/* ── Theme ─────────────────────────────────────────────── */
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('sp-theme', t);
+  document.querySelectorAll('.theme-opt').forEach(b => b.classList.toggle('active', b.dataset.t === t));
+}
+const saved = localStorage.getItem('sp-theme');
+if (saved) setTheme(saved);
+
+/* ── Animated background ───────────────────────────────── */
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function getParticleColor() {
+    const theme = document.documentElement.getAttribute('data-theme') || 'light';
+    if (theme === 'dark')     return 'rgba(180,160,255,';
+    if (theme === 'dyslexia') return 'rgba(45,74,138,';
+    return 'rgba(14,14,14,';
+  }
+
+  function makeParticles() {
+    return Array.from({length: 38}, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 2.5 + .5,
+      dx: (Math.random() - .5) * .35,
+      dy: (Math.random() - .5) * .35,
+      o: Math.random() * .12 + .03,
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const col = getParticleColor();
+    for (let p of particles) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = col + p.o + ')';
+      ctx.fill();
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < 0 || p.x > W) p.dx *= -1;
+      if (p.y < 0 || p.y > H) p.dy *= -1;
+    }
+    // Draw soft connecting lines
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = col + (0.04 * (1 - dist/120)) + ')';
+          ctx.lineWidth = .5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  particles = makeParticles();
+  window.addEventListener('resize', () => { resize(); particles = makeParticles(); });
+  draw();
+})();
+
+/* ── Upload interactions ────────────────────────────────── */
+const dropZone   = document.getElementById("dropZone");
+const fileInput  = document.getElementById("fileInput");
+const chosenFile = document.getElementById("chosenFile");
+const submitBtn  = document.getElementById("submitBtn");
+const spinner    = document.getElementById("spinner");
+const form       = document.getElementById("uploadForm");
+
+dropZone.addEventListener("click", () => fileInput.click());
+
+fileInput.addEventListener("change", () => {
+  const f = fileInput.files[0];
+  if (f) { chosenFile.textContent = "✓ " + f.name; submitBtn.disabled = false; }
+});
+
+dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("drop-zone--hover"); });
+dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drop-zone--hover"));
+dropZone.addEventListener("drop", e => {
+  e.preventDefault();
+  dropZone.classList.remove("drop-zone--hover");
+  const f = e.dataTransfer.files[0];
+  if (f && f.name.toLowerCase().endsWith(".pdf")) {
+    const dt = new DataTransfer(); dt.items.add(f); fileInput.files = dt.files;
+    chosenFile.textContent = "✓ " + f.name; submitBtn.disabled = false;
+  } else {
+    chosenFile.textContent = "⚠ PDF files only.";
+  }
+});
+
+form.addEventListener("submit", () => {
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Parsing…";
+  spinner.classList.remove("hidden");
+});
+
+
+/* ── Agent Memory ────────────────────────────────────── */
+(async function() {
+  try {
+    const res = await fetch('/api/memory');
+    if (!res.ok) return;
+    const m = await res.json();
+    if (!m || !m.total_calls) return;
+    document.getElementById('memoryCard').style.display = '';
+    const catEmoji = { dining:'🍔', shopping:'🛍️', groceries:'🛒', gas:'⛽', bills:'📋' };
+    const topCat = m.most_common_purchase_category || '—';
+    const insights = [
+      { label: 'Sessions', val: m.total_calls },
+      { label: 'Avg Compliance', val: (m.avg_compliance || 0).toFixed(1) + ' / 5' },
+      { label: 'Top Category', val: (catEmoji[topCat] || '💳') + ' ' + topCat },
+      { label: 'Impulse Rate', val: Math.round((m.impulse_frequency || 0) * 100) + '%' },
+      { label: 'Best Persona', val: m.preferred_persona || '—' },
+      { label: 'Risk Tendency', val: m.risk_tendency || '—' },
+    ];
+    document.getElementById('memoryInsights').innerHTML = insights.map(i =>
+      `<div class="memory-insight"><div class="memory-insight__label">${i.label}</div><div class="memory-insight__val">${i.val}</div></div>`
+    ).join('');
+    const history = m.history || [];
+    const maxC = Math.max(...history.map(h => h.compliance), 1);
+    const barColors = ['#6366f1','#a855f7','#ec4899','#f59e0b','#10b981','#3b82f6','#ef4444','#8b5cf6'];
+    document.getElementById('memoryHistory').innerHTML = history.map((h, i) =>
+      `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:.25rem;">
+        <div class="memory-bar" style="width:100%;height:${Math.max(4,Math.round(h.compliance/maxC*40))}px;background:${barColors[i%barColors.length]};border-radius:3px 3px 0 0;" title="Session ${h.call_index}: compliance ${h.compliance}"></div>
+        <div class="memory-bar-label">${h.call_index}</div>
+      </div>`
+    ).join('');
+    const notes = [];
+    if (m.avg_compliance >= 4) notes.push("You're highly responsive to spending advice.");
+    else if (m.avg_compliance < 2) notes.push("You tend to push back on suggestions — the agent will adapt.");
+    if (m.impulse_frequency > 0.3) notes.push("Impulse purchases flagged in past sessions.");
+    if (m.preferred_persona) notes.push(`${m.preferred_persona.charAt(0).toUpperCase() + m.preferred_persona.slice(1)} tone works best for you.`);
+    document.getElementById('memoryNote').textContent = notes.join(' ');
+  } catch(e) {}
+})();
+
+
+</script>
+</body>
+</html>
