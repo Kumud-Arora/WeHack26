@@ -6,7 +6,11 @@ Upload your bank statement, call a phone number, and ask your AI anything about 
 
 ## Demo
 
-<video src="assets/demoewehack.mp4" controls width="100%"></video>
+<p align="center">
+    <a href="https://youtu.be/xCoycVk6AC8">
+        <img src="https://img.youtube.com/vi/xCoycVk6AC8/maxresdefault.jpg" width="600"/>
+    </a>
+</p>
 
 ---
 
