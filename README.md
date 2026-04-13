@@ -2,15 +2,9 @@
 
 Upload your bank statement, call a phone number, and ask your AI anything about your money, or if you think buying a tesla on a random tuesday is fine...
 
----
-
 ## Demo
 
-<p align="center">
-    <a href="https://youtu.be/xCoycVk6AC8">
-        <img src="https://img.youtube.com/vi/xCoycVk6AC8/maxresdefault.jpg" width="600"/>
-    </a>
-</p>
+[![Watch the demo](https://img.youtube.com/vi/xCoycVk6AC8/0.jpg)](https://youtu.be/xCoycVk6AC8)
 
 ---
 
