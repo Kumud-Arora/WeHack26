@@ -6,7 +6,7 @@ Upload your bank statement, call a phone number, and ask your AI anything about 
 
 ## Demo
 
-<video src="https://github.com/user/repo/assets/C:\Users\manth\Downloads\demoewehack.mp4" controls width="100%"></video>
+<video src="assets/demowehack.mp4" controls width="100%"></video>
 
 ---
 
