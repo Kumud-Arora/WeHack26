@@ -266,8 +266,14 @@ def build_system_prompt(context: dict[str, Any]) -> str:
 
     # ── Budget preferences ────────────────────────────────────────────────
     if budget:
-        for cat, limit in budget.items():
-            lines.append(f"Monthly budget limit for {cat}: ${float(limit):.2f}")
+        weekly = budget.get("weekly_budget")
+        if weekly:
+            lines.append(f"Weekly budget: ${float(weekly):.2f}")
+        
+        # Add actual spending by category (skip meta fields)
+        for cat, amount in budget.items():
+            if cat not in ("weekly_budget", "spending_by_category", "month_start", "month_end", "week_start", "week_end"):
+                lines.append(f"Spent this week on {cat}: ${float(amount):.2f}")
 
     # ── Behavioral memory ─────────────────────────────────────────────────
     if context.get("has_memory"):

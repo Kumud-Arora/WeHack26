@@ -285,22 +285,22 @@
   },
   "+15129888395": {
     "user_id": "+15129888395",
-    "total_calls": 1,
+    "total_calls": 2,
     "avg_compliance": 0.0,
     "avg_pushback": 0.0,
     "avg_hesitation": 1.0,
-    "avg_confidence": 0.11,
+    "avg_confidence": 0.07,
     "avg_persuadability": 0.03,
     "impulse_frequency": 0.0,
     "most_common_purchase_category": "unknown",
     "category_counts": {
-      "unknown": 1
+      "unknown": 2
     },
     "risk_tendency": "high",
-    "preferred_persona": null,
+    "preferred_persona": "friendly",
     "persona_stats": {
       "friendly": {
-        "calls": 1,
+        "calls": 2,
         "avg_compliance": 0.0,
         "avg_persuadability": 0.03
       }
@@ -313,6 +313,16 @@
         "spending_type": "unclear",
         "purchase_category": "unknown",
         "confidence": 0.11,
+        "persuadability": 0.03,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 2,
+        "compliance": 0.0,
+        "pushback": 0,
+        "spending_type": "unclear",
+        "purchase_category": "unknown",
+        "confidence": 0.03,
         "persuadability": 0.03,
         "impulse_flag": false
       }

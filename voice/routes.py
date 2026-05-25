@@ -180,10 +180,13 @@ def incoming_call() -> Response:
         # Simplest possible greeting
         greeting_text = "Hi there. What is your question?"
         
-        # Build minimal TwiML - standard Twilio format
+        # Build TwiML - Gather will POST to action URL when speech detected or timeout
         body = (
-            f'<Say>{_xml(greeting_text)}</Say>\n'
-            f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="5" speechTimeout="2"/>\n'
+            f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="20" speechTimeout="10">\n'
+            f'  <Say>{_xml(greeting_text)}</Say>\n'
+            f'</Gather>\n'
+            f'<Say>Goodbye.</Say>\n'
+            f'<Hangup/>\n'
         )
         
         twiml_response = _twiml(body)
@@ -201,6 +204,7 @@ def handle_speech() -> Response:
     Called by Twilio after <Gather> captures speech.
     Detects exit intent, then builds Gemini context and speaks a reply.
     """
+    call_sid = "unknown"
     try:
         call_sid    = request.form.get("CallSid",      "unknown")
         speech_text = request.form.get("SpeechResult", "").strip()
@@ -215,68 +219,82 @@ def handle_speech() -> Response:
             return _twiml(body)
 
         if not speech_text:
-            logger.info("No speech detected")
+            logger.info("No speech detected for %s", call_sid)
             body = (
-                f'<Say>I did not hear anything.</Say>\n'
-                f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="5" speechTimeout="2"/>\n'
+                f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="20" speechTimeout="10">\n'
+                f'  <Say>I did not hear anything. Please try again.</Say>\n'
+                f'</Gather>\n'
+                f'<Say>Goodbye.</Say>\n'
+                f'<Hangup/>\n'
             )
             return _twiml(body)
 
         # Check for exit
         if _is_exit(speech_text):
-            logger.info("Exit detected")
+            logger.info("Exit detected for %s", call_sid)
             session.add_turn("user", speech_text)
             _run_postprocess(call_sid, session.user_id, session.to_conversation())
             session_store.remove(call_sid)
             body = '<Say>Goodbye.</Say>\n<Hangup/>\n'
             return _twiml(body)
 
+        # Initialize ai_reply to fallback
+        ai_reply = "I'm having trouble. Please try again."
+        
         # Generate Gemini response
-        logger.info("Getting Gemini response for: %s", speech_text[:100])
+        logger.info("Getting Gemini response for %s: %s", call_sid, speech_text[:100])
         try:
             from voice.context_builder import build_context, build_system_prompt
             from voice import gemini_client
 
+            logger.debug("Building context for %s", call_sid)
             context       = build_context(session.user_id)
+            logger.debug("Building system prompt for %s", call_sid)
             system_prompt = build_system_prompt(context)
+            logger.debug("Calling Gemini for %s", call_sid)
             ai_reply      = gemini_client.ask(system_prompt, speech_text)
-            logger.info("Gemini replied: %s", ai_reply[:100])
+            logger.info("Gemini succeeded for %s, reply: %s", call_sid, ai_reply[:100])
 
         except Exception as exc:
-            logger.error("Gemini error: %s", exc, exc_info=True)
+            logger.error("Gemini error for %s: %s", call_sid, exc, exc_info=True)
             ai_reply = "I'm having trouble right now. Please try again."
 
         session.add_turn("user", speech_text)
         session.add_turn("assistant", ai_reply)
+        logger.debug("Added turns to session %s", call_sid)
 
         # Try Inworld TTS for the response (Gemini now adds emotion tags directly)
-        logger.info("Attempting Inworld TTS for response")
+        logger.info("Attempting Inworld TTS for %s", call_sid)
+        audio_url = None
         try:
             audio_url, error = inworld_client.synthesize(ai_reply)
+            logger.debug("TTS result for %s: url=%s, error=%s", call_sid, audio_url, error)
+            
             if audio_url:
-                logger.info("Inworld TTS succeeded: %s", audio_url)
+                logger.info("Inworld TTS succeeded for %s: %s", call_sid, audio_url)
                 body = (
                     f'<Play>{_xml(audio_url)}</Play>\n'
-                    f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="5" speechTimeout="2"/>\n'
+                    f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="20" speechTimeout="10"/>\n'
                 )
             else:
-                logger.warning("Inworld TTS failed, using Twilio Say: %s", error)
+                logger.warning("Inworld TTS failed for %s, using Twilio Say. Error: %s", call_sid, error)
                 body = (
                     f'<Say>{_xml(ai_reply)}</Say>\n'
-                    f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="5" speechTimeout="2"/>\n'
+                    f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="20" speechTimeout="10"/>\n'
                 )
         except Exception as exc:
-            logger.error("TTS exception: %s", exc, exc_info=True)
+            logger.error("TTS exception for %s: %s", call_sid, exc, exc_info=True)
+            logger.info("Falling back to Twilio Say for %s", call_sid)
             body = (
                 f'<Say>{_xml(ai_reply)}</Say>\n'
-                f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="5" speechTimeout="2"/>\n'
+                f'<Gather input="speech" action="{_base_url()}/voice/speech" method="POST" timeout="20" speechTimeout="10"/>\n'
             )
         
-        logger.info("=== RETURNING SPEECH RESPONSE ===")
+        logger.info("=== RETURNING SPEECH RESPONSE for %s ===", call_sid)
         return _twiml(body)
     
     except Exception as exc:
-        logger.error("=== EXCEPTION IN SPEECH: %s ===", exc, exc_info=True)
+        logger.error("=== EXCEPTION IN SPEECH %s: %s ===", call_sid, exc, exc_info=True)
         return _twiml('<Say>An error occurred.</Say>\n<Hangup/>\n')
 
 

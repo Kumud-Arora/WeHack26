@@ -313,4 +313,7 @@ if __name__ == "__main__":
     port  = int(os.environ.get("FLASK_PORT", 5000))
     debug = os.environ.get("FLASK_DEBUG", "true").lower() == "true"
     logger.info("Starting FinBot on port %d (debug=%s)", port, debug)
-    app.run(debug=debug, port=port)
+    # Set timeout to 60 seconds to allow time for Gemini API + Inworld TTS synthesis
+    import socket
+    socket.setdefaulttimeout(60)
+    app.run(debug=debug, port=port, threaded=True)
