@@ -1,0 +1,68 @@
+[
+  {
+    "id": "conv_001",
+    "persona": "encouraging",
+    "turns": [
+      {"speaker": "assistant", "text": "Hi! How can I help with your budget today?"},
+      {"speaker": "user",      "text": "Um, well, I spent a lot on food this week I guess."},
+      {"speaker": "assistant", "text": "Let's look at that. You spent $180 on dining out."},
+      {"speaker": "user",      "text": "Yeah, okay, that makes sense. Maybe I should cut back."},
+      {"speaker": "assistant", "text": "Great idea! Try cooking at home 3 nights a week."},
+      {"speaker": "user",      "text": "I suppose, I mean, sure I'll try that."},
+      {"speaker": "assistant", "text": "You're doing great! Any other concerns?"},
+      {"speaker": "user",      "text": "Not really, I think I'm good for now. Alright, will do."}
+    ]
+  },
+  {
+    "id": "conv_002",
+    "persona": "strict",
+    "turns": [
+      {"speaker": "assistant", "text": "Let's review your recent purchases."},
+      {"speaker": "user",      "text": "But I need all of it. It was on sale at Amazon, couldn't resist."},
+      {"speaker": "assistant", "text": "You spent $340 on electronics this month."},
+      {"speaker": "user",      "text": "That's too much? No way, my Amazon order was just things I needed."},
+      {"speaker": "assistant", "text": "Consider returning the items you haven't opened."},
+      {"speaker": "user",      "text": "I won't do that. I deserve it, treat myself sometimes."},
+      {"speaker": "assistant", "text": "Your savings goal will be delayed by 2 months."},
+      {"speaker": "user",      "text": "I don't think that's right. However, I'll reconsider... maybe."}
+    ]
+  },
+  {
+    "id": "conv_003",
+    "persona": "encouraging",
+    "turns": [
+      {"speaker": "assistant", "text": "Hi! I noticed your grocery bill went up this month."},
+      {"speaker": "user",      "text": "I know, I had to stock up, we needed groceries."},
+      {"speaker": "assistant", "text": "That's understandable! You could try meal planning."},
+      {"speaker": "user",      "text": "Good idea! I'll do that. Let's start meal planning, sounds good."},
+      {"speaker": "assistant", "text": "Would you like help setting a weekly grocery budget?"},
+      {"speaker": "user",      "text": "Absolutely! That would be perfect. Let's set it up."}
+    ]
+  },
+  {
+    "id": "conv_004",
+    "persona": "strict",
+    "turns": [
+      {"speaker": "assistant", "text": "Your gas spending is 40% above the monthly average."},
+      {"speaker": "user",      "text": "But I commute every day, gas is expensive, I can't help it."},
+      {"speaker": "assistant", "text": "You should carpool or take transit twice a week."},
+      {"speaker": "user",      "text": "That won't work. I have different hours, it's just not possible."},
+      {"speaker": "assistant", "text": "Even one carpool day saves $30 a month."},
+      {"speaker": "user",      "text": "I'm not sure. I doubt I'd find someone with my schedule."},
+      {"speaker": "assistant", "text": "Let's set a goal to try it once this week."},
+      {"speaker": "user",      "text": "Hmm, however, I really don't think so. Not convinced."}
+    ]
+  },
+  {
+    "id": "conv_005",
+    "persona": "friendly",
+    "turns": [
+      {"speaker": "assistant", "text": "I see you're considering upgrading your phone plan."},
+      {"speaker": "user",      "text": "Yeah, I've been comparing my phone bill, been planning this for a while."},
+      {"speaker": "assistant", "text": "Your current bill is $85/month. Mint Mobile is $30."},
+      {"speaker": "user",      "text": "That makes sense! I researched the bill too. Sounds good."},
+      {"speaker": "assistant", "text": "Switching saves $660 a year. Shall we walk through it?"},
+      {"speaker": "user",      "text": "You're right, absolutely! I'll do it. Great idea, you've convinced me."}
+    ]
+  }
+]

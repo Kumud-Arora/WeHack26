@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results — {{ data.file_name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <div class="logo-mark">📄</div>
+      <div>
+        <div class="logo-text">MemoryBank</div>
+        <div class="logo-sub">{{ data.file_name }}</div>
+      </div>
+    </a>
+    <div class="header-right">
+      <div class="theme-switcher">
+        <button class="theme-opt active" data-t="light" onclick="setTheme('light')">☀ Light</button>
+        <button class="theme-opt" data-t="dark" onclick="setTheme('dark')">🌙 Dark</button>
+        <button class="theme-opt" data-t="dyslexia" onclick="setTheme('dyslexia')">Dyslexia</button>
+      </div>
+      <a href="/download/{{ result_id }}" class="nav-btn nav-btn--accent">⬇ Download JSON</a>
+      <a href="/json/{{ result_id }}" class="nav-btn" target="_blank">Raw JSON</a>
+      <a href="/" class="nav-btn">← New upload</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- Status banner -->
+  <div class="status-bar status-bar--{{ data.parsing_status }}">
+    <strong>
+      {% if data.parsing_status == 'success' %}✓ Parsed successfully
+      {% elif data.parsing_status == 'partial' %}⚠ Partially parsed
+      {% else %}✗ Parse failed
+      {% endif %}
+    </strong>
+    &nbsp;·&nbsp; {{ data.upload_timestamp[:19].replace('T', ' ') }}
+    &nbsp;·&nbsp; via {{ data.extraction_method }}
+    {% if data.parsing_notes %}
+      <ul class="notes-list">
+        {% for note in data.parsing_notes %}<li>{{ note }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+
+  {# ── Stat cards ─────────────────────────────────────────────── #}
+  <div class="card-row">
+    <div class="stat-card">
+      <div class="stat-card__label">Total spend</div>
+      <div class="stat-card__value">${{ "%.2f"|format(data.derived_metrics.get('total_spend', 0)) }}</div>
+      <div class="stat-card__sub">{{ data.derived_metrics.get('debit_transaction_count', 0) }} debit transactions</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card__label">Avg transaction</div>
+      <div class="stat-card__value">${{ "%.2f"|format(data.derived_metrics.get('average_transaction_amount', 0)) }}</div>
+    </div>
+    {% if data.account_metrics.get('new_balance') is not none %}
+    <div class="stat-card">
+      <div class="stat-card__label">Statement balance</div>
+      <div class="stat-card__value">${{ "%.2f"|format(data.account_metrics.new_balance) }}</div>
+      {% if data.account_metrics.get('credit_limit') %}
+        <div class="stat-card__sub">of ${{ "%.2f"|format(data.account_metrics.credit_limit) }} limit</div>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% if data.account_metrics.get('payment_due_date') %}
+    <div class="stat-card">
+      <div class="stat-card__label">Payment due</div>
+      <div class="stat-card__value small">{{ data.account_metrics.payment_due_date }}</div>
+      {% if data.account_metrics.get('minimum_payment') %}
+        <div class="stat-card__sub">min ${{ "%.2f"|format(data.account_metrics.minimum_payment) }}</div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+  {# ── Charts + metrics ────────────────────────────────────────── #}
+  <div class="two-col">
+    <div class="card">
+      <h2 class="card__title">Spending by category</h2>
+      {% if category_totals %}
+        <div class="chart-row">
+          <div class="donut-wrap">
+            <canvas id="donutChart"></canvas>
+            <div class="donut-center">
+              <div class="donut-center__val">${{ "%.0f"|format(data.derived_metrics.get('total_spend', 0)) }}</div>
+              <div class="donut-center__lbl">total</div>
+            </div>
+          </div>
+          <div class="donut-legend" id="donutLegend"></div>
+        </div>
+        <div style="margin-top:1.5rem;">
+          <h2 class="card__title" style="margin-bottom:.75rem;">Spending over time</h2>
+          <canvas id="spendLineChart" height="110"></canvas>
+        </div>
+      {% else %}
+        <p class="muted">No spending data available.</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h2 class="card__title">Account &amp; summary metrics</h2>
+      <dl class="dl-grid">
+        {% set acc = data.account_metrics %}
+        {% if acc.get('statement_start_date') %}
+          <dt>Statement period</dt>
+          <dd>{{ acc.statement_start_date }} – {{ acc.get('statement_end_date', '?') }}</dd>
+        {% endif %}
+        {% if acc.get('new_balance') is not none %}<dt>New balance</dt><dd>${{ "%.2f"|format(acc.new_balance) }}</dd>{% endif %}
+        {% if acc.get('previous_balance') is not none %}<dt>Previous balance</dt><dd>${{ "%.2f"|format(acc.previous_balance) }}</dd>{% endif %}
+        {% if acc.get('credit_limit') is not none %}<dt>Credit limit</dt><dd>${{ "%.2f"|format(acc.credit_limit) }}</dd>{% endif %}
+        {% if acc.get('available_credit') is not none %}<dt>Available credit</dt><dd>${{ "%.2f"|format(acc.available_credit) }}</dd>{% endif %}
+        {% if acc.get('apr') %}<dt>APR</dt><dd>{{ acc.apr }}</dd>{% endif %}
+        {% set sm = data.summary_metrics %}
+        {% if sm.get('total_purchases') is not none %}<dt>Total purchases</dt><dd>${{ "%.2f"|format(sm.total_purchases) }}</dd>{% endif %}
+        {% if sm.get('payments_made') is not none %}<dt>Payments made</dt><dd>${{ "%.2f"|format(sm.payments_made) }}</dd>{% endif %}
+        {% if sm.get('fees_charged') is not none %}<dt>Fees charged</dt><dd>${{ "%.2f"|format(sm.fees_charged) }}</dd>{% endif %}
+        {% if sm.get('interest_charged') is not none %}<dt>Interest charged</dt><dd>${{ "%.2f"|format(sm.interest_charged) }}</dd>{% endif %}
+        {% if sm.get('credits') is not none %}<dt>Credits / refunds</dt><dd>${{ "%.2f"|format(sm.credits) }}</dd>{% endif %}
+      </dl>
+    </div>
+  </div>
+
+  {# ── Top merchants ───────────────────────────────────────────── #}
+  {% set top = data.derived_metrics.get('top_merchants_by_spend', []) %}
+  {% if top %}
+  <div class="card">
+    <h2 class="card__title">Top merchants by spend</h2>
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Merchant</th><th class="text-right">Total</th></tr></thead>
+      <tbody>
+        {% for m in top %}
+        <tr>
+          <td class="muted">{{ loop.index }}</td>
+          <td>{{ m.merchant }}</td>
+          <td class="text-right">${{ "%.2f"|format(m.total) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  {# ── Transactions ────────────────────────────────────────────── #}
+  <div class="card">
+    <div class="card__header">
+      <h2 class="card__title">
+        Transactions
+        <span class="badge">{{ data.transactions | length }}</span>
+      </h2>
+      <input type="text" id="txnSearch" class="search-input" placeholder="Filter transactions…">
+    </div>
+
+    {% if data.transactions %}
+    <div class="table-scroll">
+      <table class="data-table" id="txnTable">
+        <thead>
+          <tr>
+            <th>Date</th><th>Merchant</th><th>Category</th>
+            <th>Direction</th><th class="text-right">Amount</th><th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in data.transactions %}
+          <tr>
+            <td class="mono">{{ t.transaction_date }}</td>
+            <td>
+              <span class="merchant-normalized">{{ t.merchant_normalized }}</span>
+              {% if t.merchant_raw != t.merchant_normalized %}
+                <span class="merchant-raw">{{ t.merchant_raw }}</span>
+              {% endif %}
+            </td>
+            <td><span class="cat-pill cat-pill--{{ t.normalized_category }}">{{ t.normalized_category }}</span></td>
+            <td><span class="dir-pill dir-pill--{{ t.direction }}">{{ t.direction }}</span></td>
+            <td class="text-right mono">${{ "%.2f"|format(t.amount) }}</td>
+            <td class="muted small">{{ t.location_text or '' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <p class="muted empty-state">No transactions were extracted from this statement.</p>
+      {% if data._debug and data._debug.extracted_sample %}
+      <details style="margin-top:1rem;">
+        <summary style="cursor:pointer;font-size:.85rem;color:var(--muted);font-weight:600;">
+          ▶ Show extracted text sample ({{ data._debug.total_text_lines }} lines, {{ data._debug.tables_found }} tables found)
+        </summary>
+        <pre style="margin-top:.75rem;padding:1rem;background:var(--accent-tint);border-radius:var(--r);
+                    font-size:.75rem;overflow-x:auto;white-space:pre-wrap;color:var(--text);line-height:1.5;
+                    border:1px solid var(--border);">{{ data._debug.extracted_sample | join('\n') }}</pre>
+      </details>
+      {% endif %}
+    {% endif %}
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>
+    <a href="/download/{{ result_id }}">Download JSON</a> ·
+    <a href="/json/{{ result_id }}" target="_blank">Raw JSON</a> ·
+    <a href="/">Parse another</a>
+  </p>
+</footer>
+
+<script>
+/* ── Theme ─────────────────────────────────────────────── */
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('sp-theme', t);
+  document.querySelectorAll('.theme-opt').forEach(b => b.classList.toggle('active', b.dataset.t === t));
+}
+const saved = localStorage.getItem('sp-theme');
+if (saved) setTheme(saved);
+
+/* ── Animated background ───────────────────────────────── */
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function getCol() {
+    const t = document.documentElement.getAttribute('data-theme') || 'light';
+    if (t === 'dark')     return 'rgba(180,160,255,';
+    if (t === 'dyslexia') return 'rgba(45,74,138,';
+    return 'rgba(14,14,14,';
+  }
+
+  function makeParticles() {
+    return Array.from({length: 38}, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 2.5 + .5,
+      dx: (Math.random() - .5) * .35, dy: (Math.random() - .5) * .35,
+      o: Math.random() * .12 + .03,
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    const col = getCol();
+    for (let p of particles) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = col + p.o + ')';
+      ctx.fill();
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < 0 || p.x > W) p.dx *= -1;
+      if (p.y < 0 || p.y > H) p.dy *= -1;
+    }
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = col + (0.04 * (1 - dist/120)) + ')';
+          ctx.lineWidth = .5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  particles = makeParticles();
+  window.addEventListener('resize', () => { resize(); particles = makeParticles(); });
+  draw();
+})();
+
+/* ── Transaction filter ────────────────────────────────── */
+const searchInput = document.getElementById("txnSearch");
+const table       = document.getElementById("txnTable");
+if (searchInput && table) {
+  searchInput.addEventListener("input", () => {
+    const q = searchInput.value.toLowerCase();
+    table.querySelectorAll("tbody tr").forEach(r => {
+      r.style.display = r.textContent.toLowerCase().includes(q) ? "" : "none";
+    });
+  });
+}
+
+/* ── Charts ────────────────────────────────────────────── */
+(function() {
+  const catTotals = {{ category_totals | tojson }};
+  const transactions = {{ data.transactions | tojson }};
+  const CAT_COLORS = {
+    shopping:'#a855f7', dining:'#6366f1', essentials:'#10b981',
+    groceries:'#f59e0b', entertainment:'#ec4899', travel:'#3b82f6',
+    health:'#14b8a6', utilities:'#f97316', miscellaneous:'#94a3b8',
+  };
+  function catColor(cat) { return CAT_COLORS[cat] || '#94a3b8'; }
+
+  const donutCanvas = document.getElementById('donutChart');
+  if (donutCanvas && Object.keys(catTotals).length) {
+    const labels = Object.keys(catTotals);
+    const values = Object.values(catTotals);
+    const colors = labels.map(catColor);
+    new Chart(donutCanvas, {
+      type: 'doughnut',
+      data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: 'transparent', hoverOffset: 6 }] },
+      options: { cutout: '70%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: $${ctx.parsed.toFixed(2)}` } } }, animation: { duration: 700 } }
+    });
+    const legend = document.getElementById('donutLegend');
+    if (legend) {
+      legend.innerHTML = labels.map((lbl, i) =>
+        `<div class="legend-item"><div class="legend-dot" style="background:${colors[i]}"></div><span class="legend-name">${lbl}</span><span class="legend-amt">$${values[i].toFixed(2)}</span></div>`
+      ).join('');
+    }
+  }
+
+  const lineCanvas = document.getElementById('spendLineChart');
+  if (lineCanvas && transactions.length) {
+    const byDate = {};
+    transactions.forEach(t => {
+      if (t.direction === 'debit' && t.transaction_date)
+        byDate[t.transaction_date] = (byDate[t.transaction_date] || 0) + t.amount;
+    });
+    const dates = Object.keys(byDate).sort();
+    const amounts = dates.map(d => byDate[d]);
+    let cum = 0;
+    const cumAmounts = amounts.map(a => parseFloat((cum += a).toFixed(2)));
+    new Chart(lineCanvas, {
+      type: 'line',
+      data: {
+        labels: dates.map(d => d.slice(5)),
+        datasets: [
+          { label: 'Daily spend', data: amounts, borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,0.08)', borderWidth: 2, pointRadius: 3, tension: 0.35, fill: true },
+          { label: 'Cumulative', data: cumAmounts, borderColor: '#a855f7', borderWidth: 1.5, borderDash: [4,3], pointRadius: 0, tension: 0.35, fill: false }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { display: true, position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } }, tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}` } } },
+        scales: { x: { grid: { display: false }, ticks: { font: { size: 10 } } }, y: { grid: { color: 'rgba(128,128,128,0.1)' }, ticks: { callback: v => '$'+v, font: { size: 10 } } } },
+        animation: { duration: 600 }
+      }
+    });
+  }
+})();
+
+</script>
+</body>
+</html>

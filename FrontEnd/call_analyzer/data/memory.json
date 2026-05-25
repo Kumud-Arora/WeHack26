@@ -1,0 +1,210 @@
+{
+  "demo_user": {
+    "user_id": "demo_user",
+    "total_calls": 8,
+    "avg_compliance": 2.7876,
+    "avg_pushback": 2.3625,
+    "avg_hesitation": 2.0,
+    "avg_confidence": 0.4613,
+    "avg_persuadability": 0.5325,
+    "impulse_frequency": 0.2488,
+    "most_common_purchase_category": "dining",
+    "category_counts": {
+      "dining": 3,
+      "shopping": 2,
+      "groceries": 1,
+      "gas": 1,
+      "bills": 1
+    },
+    "risk_tendency": "medium",
+    "preferred_persona": "friendly",
+    "persona_stats": {
+      "encouraging": {
+        "calls": 4,
+        "avg_compliance": 3.9,
+        "avg_persuadability": 0.775
+      },
+      "strict": {
+        "calls": 3,
+        "avg_compliance": 0.6333,
+        "avg_persuadability": 0.0733
+      },
+      "friendly": {
+        "calls": 1,
+        "avg_compliance": 5.0,
+        "avg_persuadability": 1.0
+      }
+    },
+    "history": [
+      {
+        "call_index": 1,
+        "compliance": 3.2,
+        "pushback": 1,
+        "spending_type": "unclear",
+        "purchase_category": "dining",
+        "confidence": 0.52,
+        "persuadability": 0.61,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 2,
+        "compliance": 0.9,
+        "pushback": 4,
+        "spending_type": "impulse",
+        "purchase_category": "shopping",
+        "confidence": 0.48,
+        "persuadability": 0.18,
+        "impulse_flag": true
+      },
+      {
+        "call_index": 3,
+        "compliance": 2.2,
+        "pushback": 1,
+        "spending_type": "essential",
+        "purchase_category": "dining",
+        "confidence": 0.65,
+        "persuadability": 0.47,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 4,
+        "compliance": 5.0,
+        "pushback": 1,
+        "spending_type": "unclear",
+        "purchase_category": "dining",
+        "confidence": 0.22,
+        "persuadability": 1.0,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 5,
+        "compliance": 0.0,
+        "pushback": 6,
+        "spending_type": "impulse",
+        "purchase_category": "shopping",
+        "confidence": 0.37,
+        "persuadability": 0.0,
+        "impulse_flag": true
+      },
+      {
+        "call_index": 6,
+        "compliance": 5.0,
+        "pushback": 0,
+        "spending_type": "essential",
+        "purchase_category": "groceries",
+        "confidence": 0.59,
+        "persuadability": 1.0,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 7,
+        "compliance": 1.0,
+        "pushback": 8,
+        "spending_type": "unclear",
+        "purchase_category": "gas",
+        "confidence": 0.27,
+        "persuadability": 0.0,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 8,
+        "compliance": 5.0,
+        "pushback": 0,
+        "spending_type": "planned",
+        "purchase_category": "bills",
+        "confidence": 0.59,
+        "persuadability": 1.0,
+        "impulse_flag": false
+      }
+    ]
+  },
+  "my_user_id": {
+    "user_id": "my_user_id",
+    "total_calls": 5,
+    "avg_compliance": 3.2,
+    "avg_pushback": 3.0,
+    "avg_hesitation": 2.0,
+    "avg_confidence": 0.408,
+    "avg_persuadability": 0.6,
+    "impulse_frequency": 0.2,
+    "most_common_purchase_category": "dining",
+    "category_counts": {
+      "dining": 1,
+      "shopping": 1,
+      "groceries": 1,
+      "gas": 1,
+      "bills": 1
+    },
+    "risk_tendency": "high",
+    "preferred_persona": "encouraging",
+    "persona_stats": {
+      "encouraging": {
+        "calls": 2,
+        "avg_compliance": 5.0,
+        "avg_persuadability": 1.0
+      },
+      "strict": {
+        "calls": 2,
+        "avg_compliance": 0.5,
+        "avg_persuadability": 0.0
+      },
+      "friendly": {
+        "calls": 1,
+        "avg_compliance": 5.0,
+        "avg_persuadability": 1.0
+      }
+    },
+    "history": [
+      {
+        "call_index": 1,
+        "compliance": 5.0,
+        "pushback": 1,
+        "spending_type": "unclear",
+        "purchase_category": "dining",
+        "confidence": 0.22,
+        "persuadability": 1.0,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 2,
+        "compliance": 0.0,
+        "pushback": 6,
+        "spending_type": "impulse",
+        "purchase_category": "shopping",
+        "confidence": 0.37,
+        "persuadability": 0.0,
+        "impulse_flag": true
+      },
+      {
+        "call_index": 3,
+        "compliance": 5.0,
+        "pushback": 0,
+        "spending_type": "essential",
+        "purchase_category": "groceries",
+        "confidence": 0.59,
+        "persuadability": 1.0,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 4,
+        "compliance": 1.0,
+        "pushback": 8,
+        "spending_type": "unclear",
+        "purchase_category": "gas",
+        "confidence": 0.27,
+        "persuadability": 0.0,
+        "impulse_flag": false
+      },
+      {
+        "call_index": 5,
+        "compliance": 5.0,
+        "pushback": 0,
+        "spending_type": "planned",
+        "purchase_category": "bills",
+        "confidence": 0.59,
+        "persuadability": 1.0,
+        "impulse_flag": false
+      }
+    ]
+  }
+}

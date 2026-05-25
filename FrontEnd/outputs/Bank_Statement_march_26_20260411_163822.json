@@ -1,0 +1,41 @@
+{
+  "file_name": "Bank Statement march 26.pdf",
+  "upload_timestamp": "2026-04-11T16:38:18.434896",
+  "parsing_status": "partial",
+  "parsing_notes": [
+    "Zero transactions extracted. The statement format may be unusual; review the raw JSON for diagnostics."
+  ],
+  "extraction_method": "pdfplumber",
+  "account_metrics": {
+    "new_balance": null,
+    "previous_balance": null,
+    "minimum_payment": null,
+    "payment_due_date": null,
+    "credit_limit": null,
+    "available_credit": null,
+    "apr": null,
+    "statement_start_date": null,
+    "statement_end_date": null,
+    "fico_score": 780
+  },
+  "summary_metrics": {
+    "total_purchases": null,
+    "payments_made": 1.0,
+    "fees_charged": null,
+    "interest_charged": null,
+    "credits": null,
+    "cash_advances": 28.49
+  },
+  "transactions": [],
+  "derived_metrics": {
+    "total_transaction_count": 0,
+    "debit_transaction_count": 0,
+    "credit_transaction_count": 0,
+    "total_spend": 0.0,
+    "average_transaction_amount": 0.0,
+    "category_totals": {},
+    "spending_by_category": {},
+    "top_merchants_by_spend": [],
+    "top_merchants_by_frequency": []
+  }
+}

@@ -1,0 +1,157 @@
+[
+  {
+    "conversation_id": "conv_001",
+    "user_id": "demo_user",
+    "raw_features": {
+      "compliance_score": 5.0,
+      "pushback_count": 1,
+      "hesitation_count": 6,
+      "impulse_count": 0,
+      "decision_turn": -1,
+      "spending_type": "unclear",
+      "purchase_category": "dining",
+      "total_turns": 8,
+      "persona_used": "encouraging"
+    },
+    "metrics": {
+      "compliance_level": "high",
+      "pushback_level": "low",
+      "spending_intent": "unclear",
+      "purchase_category": "dining",
+      "confidence_score": 0.22,
+      "persuadability_score": 1.0,
+      "persona_effectiveness": {
+        "persona": "encouraging",
+        "pushback_rate": 0.125,
+        "persuadability": 1.0
+      },
+      "decision_speed": "undecided",
+      "impulse_flag": false
+    },
+    "summary": "User was highly receptive to suggestions. Spending intent was unclear. No clear decision was made by the end of the call. User is highly persuadable with the 'encouraging' persona."
+  },
+  {
+    "conversation_id": "conv_002",
+    "user_id": "demo_user",
+    "raw_features": {
+      "compliance_score": 0.0,
+      "pushback_count": 6,
+      "hesitation_count": 1,
+      "impulse_count": 4,
+      "decision_turn": -1,
+      "spending_type": "impulse",
+      "purchase_category": "shopping",
+      "total_turns": 8,
+      "persona_used": "strict"
+    },
+    "metrics": {
+      "compliance_level": "low",
+      "pushback_level": "high",
+      "spending_intent": "impulse",
+      "purchase_category": "shopping",
+      "confidence_score": 0.37,
+      "persuadability_score": 0.0,
+      "persona_effectiveness": {
+        "persona": "strict",
+        "pushback_rate": 0.75,
+        "persuadability": 0.0
+      },
+      "decision_speed": "undecided",
+      "impulse_flag": true
+    },
+    "summary": "User showed little compliance during this call. There was significant resistance throughout the conversation. Spending appeared impulsive in the shopping category. No clear decision was made by the end of the call. User was difficult to persuade even with the 'strict' persona."
+  },
+  {
+    "conversation_id": "conv_003",
+    "user_id": "demo_user",
+    "raw_features": {
+      "compliance_score": 5.0,
+      "pushback_count": 0,
+      "hesitation_count": 0,
+      "impulse_count": 0,
+      "decision_turn": 1,
+      "spending_type": "essential",
+      "purchase_category": "groceries",
+      "total_turns": 6,
+      "persona_used": "encouraging"
+    },
+    "metrics": {
+      "compliance_level": "high",
+      "pushback_level": "low",
+      "spending_intent": "essential",
+      "purchase_category": "groceries",
+      "confidence_score": 0.59,
+      "persuadability_score": 1.0,
+      "persona_effectiveness": {
+        "persona": "encouraging",
+        "pushback_rate": 0.0,
+        "persuadability": 1.0
+      },
+      "decision_speed": "medium",
+      "impulse_flag": false
+    },
+    "summary": "User was highly receptive to suggestions. Purchase was identified as an essential expense (groceries). User is highly persuadable with the 'encouraging' persona."
+  },
+  {
+    "conversation_id": "conv_004",
+    "user_id": "demo_user",
+    "raw_features": {
+      "compliance_score": 1.0,
+      "pushback_count": 8,
+      "hesitation_count": 3,
+      "impulse_count": 0,
+      "decision_turn": -1,
+      "spending_type": "unclear",
+      "purchase_category": "gas",
+      "total_turns": 8,
+      "persona_used": "strict"
+    },
+    "metrics": {
+      "compliance_level": "medium",
+      "pushback_level": "high",
+      "spending_intent": "unclear",
+      "purchase_category": "gas",
+      "confidence_score": 0.27,
+      "persuadability_score": 0.0,
+      "persona_effectiveness": {
+        "persona": "strict",
+        "pushback_rate": 1.0,
+        "persuadability": 0.0
+      },
+      "decision_speed": "undecided",
+      "impulse_flag": false
+    },
+    "summary": "User showed moderate agreement. There was significant resistance throughout the conversation. Spending intent was unclear. No clear decision was made by the end of the call. User was difficult to persuade even with the 'strict' persona."
+  },
+  {
+    "conversation_id": "conv_005",
+    "user_id": "demo_user",
+    "raw_features": {
+      "compliance_score": 5.0,
+      "pushback_count": 0,
+      "hesitation_count": 0,
+      "impulse_count": 0,
+      "decision_turn": 2,
+      "spending_type": "planned",
+      "purchase_category": "bills",
+      "total_turns": 6,
+      "persona_used": "friendly"
+    },
+    "metrics": {
+      "compliance_level": "high",
+      "pushback_level": "low",
+      "spending_intent": "planned",
+      "purchase_category": "bills",
+      "confidence_score": 0.59,
+      "persuadability_score": 1.0,
+      "persona_effectiveness": {
+        "persona": "friendly",
+        "pushback_rate": 0.0,
+        "persuadability": 1.0
+      },
+      "decision_speed": "slow",
+      "impulse_flag": false
+    },
+    "summary": "User was highly receptive to suggestions. This was a planned purchase (bills). User took a long time to decide. User is highly persuadable with the 'friendly' persona."
+  }
+]
