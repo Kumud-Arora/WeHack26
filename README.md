@@ -61,8 +61,6 @@ pip install -r requirements.txt
 
 ### 2. Create your `.env` file
 
-Copy `.env.example` to `.env` and fill in your keys:
-
 ```env
 FLASK_SECRET_KEY=anything-random
 FLASK_PORT=5000
